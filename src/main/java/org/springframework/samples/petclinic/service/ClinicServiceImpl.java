@@ -15,7 +15,9 @@
  */
 package org.springframework.samples.petclinic.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -81,7 +83,7 @@ public class ClinicServiceImpl implements ClinicService {
     public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
         return ownerRepository.findByLastName(lastName);
     }
-
+    
     @Override
     @Transactional
     public void saveOwner(Owner owner) throws DataAccessException {
@@ -146,5 +148,11 @@ public class ClinicServiceImpl implements ClinicService {
     public Restaurant findRestaurantByName(String sMainName) throws DataAccessException {
         return restaurantRepository.findIdByMainName(sMainName);
     }
+    
+//    @Override
+//    @Transactional(readOnly = true)    
+//    public ArrayList<Chooser> findWhoVoteOnDate(Chooser chooser){
+//    	return chooserRepository.findWhoVotedOnDate(chooser);
+//    }
     
 }

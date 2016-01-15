@@ -17,12 +17,13 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Chooser;
 import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.Restaurant;
 import org.springframework.samples.petclinic.model.Vets;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -32,7 +33,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,6 +57,16 @@ public class ChooseController {
         this.clinicService = clinicService;
     }
     
+    @InitBinder("chooser")
+    public void initOwnerBinder(WebDataBinder dataBinder) {
+        dataBinder.setDisallowedFields("id");
+    }
+    
+    @InitBinder("chooser")
+    public void initChoiceBinder(WebDataBinder dataBinder) {
+        dataBinder.setValidator(new ChooserValidator());
+    }
+    
     @ModelAttribute("employees")
     public Collection<Owner> populateEmployees() {
         return this.clinicService.findOwners();
@@ -67,29 +77,28 @@ public class ChooseController {
         return this.clinicService.findRestaurants();
     }
 
-    @RequestMapping(value = {"/escolher.html"})
-    public String showOptionsList(Map<String, Object> model) {
+//    @RequestMapping(value = {"/escolher.html"})
+//    public String showOptionsList(Map<String, Object> model) {
+//    	
+//    	Chooser chooser = new Chooser();        
+//        model.put("chooser", chooser);
+//    	
+//        return "chooser/createOrUpdatePickedOption";
+//    }
+    
+    @RequestMapping(value = "/escolher.html", method = RequestMethod.GET)
+    public String initCreationFormToChoose(Chooser chooser, BindingResult result, ModelMap model ) {
     	
-    	Chooser chooser = new Chooser();        
-        model.put("chooser", chooser);
+    	//chooser = new Chooser();        
+        model.put("chooser", new Chooser());
     	
-        // Here we are returning an object of type 'Vets' rather than a collection of Vet objects
-        // so it is simpler for Object-Xml mapping
-//        Vets vets = new Vets();
-//        vets.getVetList().addAll(this.clinicService.findVets());
-//        model.put("vets", vets);
         return "chooser/createOrUpdatePickedOption";
     }
+
     
-    @RequestMapping(value = "/escolher.html", method = RequestMethod.POST)
-    public String processCreationForm(Chooser chooser, BindingResult result, ModelMap model) 
+    private Owner findUniqueOwner(String sLastName)
     {
-    	System.out.println("Passou com rest " + chooser.getRestaurant().getMainName());
-    	System.out.println("Passou com user " + chooser.getOwner().getLastName());
-    	System.out.println("Passou com data " + chooser.getPickedDate());
-    	
-    	//Find User id
-    	Collection<Owner> toInsert = this.clinicService.findOwnerByLastName(chooser.getOwner().getLastName());
+    	Collection<Owner> toInsert = this.clinicService.findOwnerByLastName(sLastName);
     	
     	Owner finalOwner = new Owner();
     	
@@ -99,29 +108,83 @@ public class ChooseController {
     		finalOwner = iter.next();
     	}
     	
+    	return finalOwner;
+    }
+    
+    private boolean checkForUniqueInsert(Chooser toInsert)
+    {
+    	boolean isNotUnique = false;
+    	
+    	Collection<Chooser> alreadyInserted = this.clinicService.findChoices();
+    	
+    	Chooser currentOwner = new Chooser();
+    	
+    	Iterator<Chooser> iter = alreadyInserted.iterator();
+    	while (iter.hasNext())
+    	{
+    		currentOwner = iter.next();
+    		
+    		//same day
+    		if(toInsert.getPickedDate().dayOfYear().equals(currentOwner.getPickedDate().dayOfYear()))
+    		{
+    			//same person voting
+    			if(toInsert.getOwner().getLastName().equals(currentOwner.getOwner().getLastName()))
+    			{
+    				isNotUnique = true;
+    			}
+    		}
+    	}
+    	
+    	return isNotUnique ;
+    }
+    
+    @RequestMapping(value = "/escolher.html", method = RequestMethod.POST)
+    public String processCreationForm(@Valid Chooser chooser, BindingResult result, ModelMap model) 
+    {
+    	if(chooser == null)
+    		System.out.println("null!!!");
+    	
+    	if(chooser.getRestaurant() == null || chooser.getOwner() == null || chooser.getPickedDate() == null)
+    	{
+    		System.out.println("Problema com a data!!!");
+    		result.rejectValue("owner.lastName", "required", "required");
+    		return "chooser/createOrUpdatePickedOption";
+    	}
+    	if (result.hasErrors()) 
+        {
+            model.put("chooser", chooser);
+            return "chooser/createOrUpdatePickedOption";
+        } 
+    	
+    	System.out.println("Passou com rest " + chooser.getRestaurant().getMainName());
+    	System.out.println("Passou com user " + chooser.getOwner().getLastName());
+    	System.out.println("Passou com data " + chooser.getPickedDate());
+    	
+    	//Find User id    	    
+    	Owner finalOwner = findUniqueOwner(chooser.getOwner().getLastName());    	
+    	
     	chooser.setOwner(finalOwner);
-    	System.out.println("Passou com user again " + chooser.getOwner().getLastName());
 
     	//Find Restaurant    	
     	chooser.setRestaurant(this.clinicService.findRestaurantByName(chooser.getRestaurant().getMainName()));
+    	
+    	//Check one employee by day to vote
+    	if (checkForUniqueInsert(chooser))
+    	{
+	    	System.out.println("usuario duplicado mesmo dia copm falhas!!!");
+	    	result.rejectValue("owner.lastName", "duplicate", "usuario duplicado mesmo dia");
+    		return "chooser/createOrUpdatePickedOption";
+	    	//return "redirect:/escolher.html";
+	        //result.rejectValue("name", "duplicate", "already exists");
+	    }
     	
     	this.clinicService.saveUserChoice(chooser);
     	
     	System.out.println("Passou por aki");
     	
-    	return "redirect:/resultado.html";
-    	
-//        if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null){
-//            result.rejectValue("name", "duplicate", "already exists");
-//        }
-//        if (result.hasErrors()) {
-//            model.put("pet", pet);
-//            return "pets/createOrUpdatePetForm";
-//        } else {
-//            owner.addPet(pet);
-//            this.clinicService.savePet(pet);
-//            return "redirect:/owners/{ownerId}";
-//        }
+    	//arrumar esse redirecionamento!!
+    	return "redirect:/";
+    	//return "redirect:/escolher.html";
     }
 
     

@@ -20,16 +20,15 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Birth Date</th>
-            <th>Type</th>
-            <th>Owner</th>
+            <th>Nome</th>
+            <th>Para o Dia</th>
+            <th>Com n Votos</th>
         </tr>
         </thead>
         <tr>
-            <td><c:out value="${oneChoice.description}"/></td>
+            <td><c:out value="${oneChoice.restaurant.mainName}"/></td>
             <td><joda:format value="${oneChoice.pickedDate}" pattern="yyyy/MM/dd"/></td>
-            <td><c:out value="${oneChoice.owner.city}"/></td>
+            <td><c:out value="${oneChoice.description}"/></td>
         </tr>
     </table>
 	

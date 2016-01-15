@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.dao.DataAccessException;
@@ -59,4 +60,6 @@ public interface ClinicService {
     Collection<Chooser> findChoices() throws DataAccessException;
     
     Restaurant findRestaurantByName(String sMainName) throws DataAccessException;
+    
+//    ArrayList<Chooser> findWhoVoteOnDate(Chooser chooser);
 }

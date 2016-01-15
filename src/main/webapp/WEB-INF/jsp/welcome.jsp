@@ -15,7 +15,7 @@
     <h2><fmt:message key="welcome"/></h2>
     <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
     <img src="${petsImage}"/>
-
+	<h2>Obrigado por escolher o melhor almoço!</h2>
     <jsp:include page="fragments/footer.jsp"/>
 
 </div>
