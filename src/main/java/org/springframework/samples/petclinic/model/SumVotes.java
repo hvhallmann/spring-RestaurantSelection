@@ -3,7 +3,7 @@ package org.springframework.samples.petclinic.model;
 //this one is to store after the sum of the votes
 public class SumVotes 
 {
-	public Integer weekDay;
+	public Integer weekDay;//dont use this
 	
 	public String restaurantName;
 	

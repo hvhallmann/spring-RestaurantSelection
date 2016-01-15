@@ -30,6 +30,7 @@ import org.springframework.samples.petclinic.model.SumVotes;
 import org.springframework.samples.petclinic.model.Vets;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.Vote;
+import org.springframework.samples.petclinic.model.VoteByDay;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -112,13 +113,14 @@ public class ResultController {
         LocalDate dCurrentDate = new LocalDate();//DIA D HJ
         int nDiaSemana = dCurrentDate.getDayOfWeek();
                 
-//        int nDaysUntilFirstDayWeek = dCurrentDate.getDayOfMonth() - ( 7 - nDiaSemana);
-        LocalDate dFirstDayWeek = dCurrentDate.minusDays(nDiaSemana);        //domingo eh 7 - sexta eh 5
+        LocalDate dFirstDayWeek = dCurrentDate.minusDays(nDiaSemana);        
+        LocalDate dFinalWeekDay = dFirstDayWeek.plusDays(6);
         
+        //the week is starting on monday
+        //sunday is 7 = friday is 5
         
-        
-        //Map<Integer,Map<String,Integer>> oKeepWeekDaysList = new HashMap<Integer,Map<String,Integer>>();//map to keep days
-        ArrayList<Vote> oKeepWeekDaysList = new ArrayList<Vote>(); 
+        ArrayList<VoteByDay> oKeepWeekDaysList = new ArrayList<VoteByDay>();
+        ArrayList<Vote> oInnerKeepWeekDaysList = new ArrayList<Vote>(); 
         
         //run the list to keep the week day on one collection
         Chooser oneOptionChoosed = new Chooser();
@@ -127,130 +129,127 @@ public class ResultController {
         	oneOptionChoosed = i.next();                
         	        	        
         	//remove days outside of the week
-        	if(dCurrentDate.getDayOfYear() > oneOptionChoosed.getPickedDate().getDayOfYear() &&
-        			oneOptionChoosed.getPickedDate().getDayOfYear() > dFirstDayWeek.getDayOfYear()
+        	if(dFinalWeekDay.getDayOfYear() >= oneOptionChoosed.getPickedDate().getDayOfYear() &&
+        			oneOptionChoosed.getPickedDate().getDayOfYear() >= dFirstDayWeek.getDayOfYear()
         			)
         	{
         		Vote oVote = new Vote();
         		oVote.setRestaurantName(oneOptionChoosed.getRestaurant().getMainName());
         		oVote.setWeekDay(oneOptionChoosed.getPickedDate().getDayOfWeek());
         		
-        		oKeepWeekDaysList.add(oVote);
+        		oInnerKeepWeekDaysList.add(oVote);
         		
-//        		Map<String,Integer> tempMap = new HashMap<String,Integer>();//name_restaurant and weekday
-//        		tempMap.put(oneOptionChoosed.getRestaurant().getMainName(), oneOptionChoosed.getPickedDate().getDayOfWeek());
-        		//oKeepWeekDaysList.put(oneOptionChoosed.getPickedDate().getDayOfWeek(), tempMap);
-        		
+        		//print which data is in
+        		System.out.println("restaurant " + oneOptionChoosed.getRestaurant().getMainName() + " Data: " + oneOptionChoosed.getPickedDate().toString() +
+            			" user : " + oneOptionChoosed.getOwner().getLastName());	//AKI IMPRIMO TODA A BASE
         	}
         	//After today is not going to show
-        	
-        	System.out.println("restaurant " + oneOptionChoosed.getRestaurant().getMainName() + " Data: " + oneOptionChoosed.getPickedDate().toString() +
-        			" user : " + oneOptionChoosed.getOwner().getLastName());	//AKI IMPRIMO TODA A BASE
+        	//print database
+//        	System.out.println("restaurant " + oneOptionChoosed.getRestaurant().getMainName() + " Data: " + oneOptionChoosed.getPickedDate().toString() +
+//        			" user : " + oneOptionChoosed.getOwner().getLastName());
         }
 
-        //maps weekday -> restaurant, votes
+        boolean bSHouldInclude = false;
         
-        //now sum those values
-        ArrayList<SumVotes> oFinalKeepWeekDaysList = new ArrayList<SumVotes>();
-
-        //runs over the votes
-        for(Vote oCurrentVote : oKeepWeekDaysList)
+        //for to weekdays
+        for (int ind = 1; ind <= 7; ind++)
         {
-        	Map<String,Integer> mapResult = new HashMap<String,Integer>();
+        	VoteByDay oVoteByDay = new VoteByDay();
         	
-        	SumVotes oSumVotes = new SumVotes();
-        	
-        	for(SumVotes oCurrentVoteSum : oFinalKeepWeekDaysList)
+    		//runs over the total votes
+    		for(Vote oCurrentVote : oInnerKeepWeekDaysList)
         	{
-        		if(oCurrentVoteSum.getRestaurantName().equals(oCurrentVote.getRestaurantName()) &&
-        				oCurrentVoteSum.getWeekDay().equals(oCurrentVote.getWeekDay())
-        				)
-        		{
-        			oSumVotes.setRestaurantName(oneOptionChoosed.getRestaurant().getMainName());
-        			
-        			int nCurrentValue = oSumVotes.getTotalVotes();//mapResult.get(oCurrentVote.getRestaurantName());
-        			nCurrentValue++;
-        			oSumVotes.setTotalVotes(nCurrentValue);
-        		}
-        		else
-        		{
-        			oSumVotes.setRestaurantName(oneOptionChoosed.getRestaurant().getMainName());
-        			oSumVotes.setTotalVotes(1);
-        			oSumVotes.setWeekDay(oCurrentVote.getWeekDay());
-        		}
+    			if(ind == oCurrentVote.getWeekDay())
+    			{
+    				bSHouldInclude = true;
+    				if( oVoteByDay.getComplexVote().containsKey(oCurrentVote.getRestaurantName()))
+    				{
+    					int nCurrentValue = oVoteByDay.getComplexVote().get(oCurrentVote.getRestaurantName());
+    					nCurrentValue++;
+    					oVoteByDay.getComplexVote().put(oCurrentVote.getRestaurantName(), nCurrentValue);
+    					oVoteByDay.setWeekDay(ind);
+    				}
+    				else
+    				{
+    					oVoteByDay.getComplexVote().put(oCurrentVote.getRestaurantName(), 1);
+    					oVoteByDay.setWeekDay(ind);
+    				}
+    			}//dont need here, it will pass again for other day
         	}
-        	
-
-        	oFinalKeepWeekDaysList.add(oSumVotes);
-        	
-        }
-        
-        
-        
-        for(SumVotes oCheckVoteSum : oFinalKeepWeekDaysList)
-    	{
-        	Integer nCountVotes = 0;
-        	String sPossibleWinner = "";
-        	
-        	oFinalKeepWeekDaysList.contains(o)
-        	
-        	int nTempValue = oCheckVoteSum.getTotalVotes();
-        	
-    		if(nTempValue > nCountVotes)
+    		if( bSHouldInclude)
     		{
-    			sPossibleWinner = key.toString();
-    			nCountVotes = nTempValue;
+    			oKeepWeekDaysList.add(oVoteByDay);
+    			bSHouldInclude = false;
     		}
-    		else if(nTempValue == nCountVotes)
-    		{
-    			isDraw = true;
-    			sPossibleWinner += " & " + key.toString();
-    		}
-        	
     	}
         
-        //map with final count votes
-        //Map<String,Integer> oFinalMapResult = new HashMap<String,Integer>();
-        	
-        //arrumar para empate
-        boolean isDraw = false; 
+        ArrayList<SumVotes> oKeepWinnersList = new ArrayList<SumVotes>();
         
-        //runs over the week days in the end
-        for(Integer nFinalWeekDayKey : oFinalKeepWeekDaysList.keySet())
+        boolean isDraw = false;
+        
+        //now prepare to show result
+        //for (int indWeek = 1; indWeek < 8; indWeek++)
+    	for(VoteByDay oCheckWinnerVote : oKeepWeekDaysList)	
         {
-        	Map<String,Integer> oTempMapResult = oKeepWeekDaysList.get(nFinalWeekDayKey);
-
         	Integer nCountVotes = 0;
         	String sPossibleWinner = "";
-        	//check which one is the winner on the weekday
-        	for(String key: oTempMapResult.keySet())
+        	String secondOptionRestaurant = "";
+        	for(String key: oCheckWinnerVote.getComplexVote().keySet())
         	{
-        		int nTempValue = oTempMapResult.get(key);
+        		//compare values
+        		int nTempValue = oCheckWinnerVote.getComplexVote().get(key);
         		if(nTempValue > nCountVotes)
         		{
+        			secondOptionRestaurant = sPossibleWinner; //used on repeated cases
         			sPossibleWinner = key.toString();
         			nCountVotes = nTempValue;
         		}
-        		else if(nTempValue == nCountVotes)
+    			else if(nTempValue == nCountVotes)
         		{
         			isDraw = true;
         			sPossibleWinner += " & " + key.toString();
         		}
-        		//System.out.println(key + " - " + vehicles.get(key));
+    			else
+    			{
+    				secondOptionRestaurant = key.toString(); //used on repeated cases
+    			}
         	}
-        	//this contains the final result, but is not listed, maybe here I have to print
-        	oFinalMapResult.put(sPossibleWinner, nCountVotes);
+        	SumVotes oWinner = new SumVotes();
         	if(isDraw)
-        		System.out.println("Empate " );
-        	System.out.println("The winner is: " + sPossibleWinner + " With the following votes: " + nCountVotes.toString() +
-        			" on the day " + nFinalWeekDayKey);
+        	{
+        		oWinner.setRestaurantName("Empate entre - " + sPossibleWinner);
+        	}
+        	else
+        	{
+        		//test to not repeat restaurant
+    			for(SumVotes oCheckDuplicateWinnerVote : oKeepWinnersList)		
+                {
+    				if(sPossibleWinner.equals(oCheckDuplicateWinnerVote.getRestaurantName()))
+    				{
+    					System.out.println("Not allowed repeated restaurant on the week");
+    					sPossibleWinner = secondOptionRestaurant;
+    					if(sPossibleWinner.length() < 1)
+    					{
+    						sPossibleWinner = "Restaurante repetido - dados insuficientes";
+    					}
+    				}
+                }
+
+        		oWinner.setRestaurantName(sPossibleWinner);
+        	}
         	
-        }
+        	oWinner.setRestaurantName(sPossibleWinner);
+        	oWinner.setWeekDay(oCheckWinnerVote.getWeekDay());
+        	oWinner.setTotalVotes(nCountVotes);
+        	oKeepWinnersList.add(oWinner);
+        	
+        	if(isDraw)
+        		System.out.println("possible empate");
+        	System.out.println("The winner is: " + sPossibleWinner + " With the following votes: " + nCountVotes.toString() +
+        			" on the day " + oCheckWinnerVote.getWeekDay());
+        	
+    	}
         
-        
-        
-        
-        //System.out.println("The winner is: " + sPossibleWinner + " With the following votes: " + nCountVotes.toString());
         
         Restaurant oWinnerRestaurant = new Restaurant();
         //oWinnerRestaurant.setMainName(sPossibleWinner);

@@ -65,14 +65,16 @@ INSERT INTO visits VALUES (8, 8, '2016-01-16', 'neutered');
 INSERT INTO visits VALUES (9, 7, '2016-01-01', 'rabies shot');
 INSERT INTO visits VALUES (10, 7, '2016-01-01', 'rabies shot');
 
-INSERT INTO userSelection VALUES (3, 3, 3, '2013-01-03', 'theBest');
-INSERT INTO userSelection VALUES (4, 8, 1, '2016-01-12', 'neutered');
-INSERT INTO userSelection VALUES (5, 7, 2, '2016-01-13', 'spayed');
-INSERT INTO userSelection VALUES (6, 7, 3, '2016-01-14', 'spayed');
-INSERT INTO userSelection VALUES (7, 4, 2, '2016-01-14', 'spayed');
-INSERT INTO userSelection VALUES (8, 7, 2, '2016-01-15', 'spayed');
-INSERT INTO userSelection VALUES (9, 3, 2, '2016-01-15', 'spayed');
-INSERT INTO userSelection VALUES (10, 4, 3, '2016-01-15', 'spayed');
-INSERT INTO userSelection VALUES (11, 8, 4, '2016-01-16', 'neutered');
-INSERT INTO userSelection VALUES (12, 7, 3, '2016-01-01', 'rabies shot');
-INSERT INTO userSelection VALUES (13, 7, 2, '2016-01-01', 'rabies shot');
+
+INSERT INTO userSelection VALUES (5, 7, 1, '2016-01-09', 'spayed');
+INSERT INTO userSelection VALUES (6, 6, 1, '2016-01-09', 'spayed');
+INSERT INTO userSelection VALUES (7, 7, 2, '2016-01-10', 'spayed');
+INSERT INTO userSelection VALUES (8, 6, 2, '2016-01-10', 'spayed');
+INSERT INTO userSelection VALUES (9, 6, 2, '2016-01-10', 'spayed');
+INSERT INTO userSelection VALUES (10, 3, 3, '2016-01-11', 'spayed');
+INSERT INTO userSelection VALUES (11, 4, 3, '2016-01-12', 'spayed');
+INSERT INTO userSelection VALUES (12, 3, 4, '2016-01-15', 'spayed');
+INSERT INTO userSelection VALUES (13, 4, 5, '2016-01-16', 'spayed');
+INSERT INTO userSelection VALUES (14, 3, 1, '2016-01-17', 'spayed');
+INSERT INTO userSelection VALUES (15, 4, 1, '2016-01-17', 'spayed');
+INSERT INTO userSelection VALUES (16, 3, 4, '2016-01-18', 'spayed');
