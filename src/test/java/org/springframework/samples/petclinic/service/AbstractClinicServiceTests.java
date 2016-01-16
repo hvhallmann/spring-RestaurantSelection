@@ -17,15 +17,17 @@ package org.springframework.samples.petclinic.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Chooser;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Restaurant;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.util.EntityUtils;
@@ -84,6 +86,8 @@ public abstract class AbstractClinicServiceTests {
         owner.setFirstName("Sam");
         owner.setLastName("Schultz");
         owner.setAddress("4, Evans Street");
+        owner.setPassword("hhh");
+        owner.setLogin("HVH");
         owner.setCity("Wollongong");
         owner.setTelephone("4444444444");
         this.clinicService.saveOwner(owner);
@@ -168,10 +172,10 @@ public abstract class AbstractClinicServiceTests {
         Collection<Vet> vets = this.clinicService.findVets();
 
         Vet vet = EntityUtils.getById(vets, Vet.class, 3);
-        assertThat(vet.getLastName()).isEqualTo("Douglas");
+        assertThat(vet.getLastName()).isEqualTo("");
         assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
-        assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");
-        assertThat(vet.getSpecialties().get(1).getName()).isEqualTo("surgery");
+        assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("Fancy");
+        assertThat(vet.getSpecialties().get(1).getName()).isEqualTo("LaMinuta");
     }
 
     @Test
@@ -191,4 +195,27 @@ public abstract class AbstractClinicServiceTests {
     }
 
 
+    @Test
+    @Transactional
+    public void shouldInsertUserChoice() throws Exception 
+    {
+    	int nFound = this.clinicService.findChoices().size();
+    	
+    	Owner owner = this.clinicService.findOwnerById(1);
+        
+    	Restaurant oRestaurant = new Restaurant();
+    	oRestaurant.setMainName("firstName");
+    	oRestaurant.setId(2);
+    	
+    	Chooser choose = new Chooser();
+    	choose.setDescription("test");
+    	choose.setOwner(owner);
+    	choose.setRestaurant(oRestaurant);
+    	
+        this.clinicService.saveUserChoice(choose);
+
+        assertThat(this.clinicService.findChoices().size()).isEqualTo(nFound + 1);
+        
+    }
+    
 }

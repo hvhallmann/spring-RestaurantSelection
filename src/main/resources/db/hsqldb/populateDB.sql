@@ -1,16 +1,16 @@
-INSERT INTO vets VALUES (1, 'Predio15', 'Buffet');
-INSERT INTO vets VALUES (2, 'Predio40', 'Fancy');
-INSERT INTO vets VALUES (3, 'Silva', 'LaMinuta');
-INSERT INTO vets VALUES (4, 'Adm', 'LaCarte');
-INSERT INTO vets VALUES (5, 'Outros', 'Outros');
-INSERT INTO vets VALUES (6, 'Predio12', 'Bandejao');
+INSERT INTO vets VALUES (1, 'Predio15', '');
+INSERT INTO vets VALUES (2, 'Predio40', '');
+INSERT INTO vets VALUES (3, 'Silva', '');
+INSERT INTO vets VALUES (4, 'Adm', '');
+INSERT INTO vets VALUES (5, 'Subway', '');
+INSERT INTO vets VALUES (6, 'Outros', '');
 
-INSERT INTO restaurants VALUES (1, 'Predio15', '- Puc');
-INSERT INTO restaurants VALUES (2, 'Predio40', '- Puc');
+INSERT INTO restaurants VALUES (1, 'Predio 15', '- Puc');
+INSERT INTO restaurants VALUES (2, 'Predio 40', '- Puc');
 INSERT INTO restaurants VALUES (3, 'Silva', '- Bento Gonçalves');
 INSERT INTO restaurants VALUES (4, 'Adm', ' - Puc');
-INSERT INTO restaurants VALUES (5, 'Outside', '- Porto ALegre');
-INSERT INTO restaurants VALUES (6, 'Subway', '- Tecnopuc');
+INSERT INTO restaurants VALUES (5, 'Subway', '- Porto ALegre');
+INSERT INTO restaurants VALUES (6, 'Outros', '- Tecnopuc');
 
 INSERT INTO specialties VALUES (1, 'Buffet');
 INSERT INTO specialties VALUES (2, 'Fancy');
@@ -35,7 +35,7 @@ INSERT INTO owners VALUES (3, 'Eduardo', 'Rodriquez', 'henrique', 'teste123', '2
 INSERT INTO owners VALUES (4, 'Harold', 'Davis', 'henrique', 'teste123', '563 Friendly St.', 'Windsor', '6085553198');
 INSERT INTO owners VALUES (5, 'Peter', 'McTavish', 'henrique', 'teste123', '2387 S. Fair Way', 'Madison', '6085552765');
 INSERT INTO owners VALUES (6, 'Jean', 'Coleman', 'henrique', 'teste123', '105 N. Lake St.', 'Monona', '6085552654');
-INSERT INTO owners VALUES (7, 'Jeff', 'Black', 'henrique', 'teste123', '1450 Oak Blvd.', 'Monona', '6085555387');
+INSERT INTO owners VALUES (7, 'Jeff', 'Jones', 'henrique', 'teste123', '1450 Oak Blvd.', 'Monona', '6085555387');
 INSERT INTO owners VALUES (8, 'Maria', 'Escobito', 'henrique', 'teste123', '345 Maple St.', 'Madison', '6085557683');
 INSERT INTO owners VALUES (9, 'David', 'Schroeder', 'henrique', 'teste123', '2749 Blackhawk Trail', 'Madison', '6085559435');
 INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', 'henrique', 'teste123', '2335 Independence La.', 'Waunakee', '6085555487');
@@ -72,7 +72,7 @@ INSERT INTO userSelection VALUES (7, 7, 2, '2016-01-10', 'spayed');
 INSERT INTO userSelection VALUES (8, 6, 2, '2016-01-10', 'spayed');
 INSERT INTO userSelection VALUES (9, 6, 2, '2016-01-10', 'spayed');
 INSERT INTO userSelection VALUES (10, 3, 3, '2016-01-11', 'spayed');
-INSERT INTO userSelection VALUES (11, 4, 3, '2016-01-12', 'spayed');
+INSERT INTO userSelection VALUES (11, 4, 4, '2016-01-12', 'spayed');
 INSERT INTO userSelection VALUES (12, 3, 4, '2016-01-15', 'spayed');
 INSERT INTO userSelection VALUES (13, 4, 5, '2016-01-16', 'spayed');
 INSERT INTO userSelection VALUES (14, 3, 1, '2016-01-17', 'spayed');

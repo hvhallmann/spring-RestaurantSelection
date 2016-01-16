@@ -14,7 +14,7 @@
 <body>
 <div class="container">
     <jsp:include page="../fragments/bodyHeader.jsp"/>
-    <h2>Owners</h2>
+    <h2>Funcionários</h2>
 
     <datatables:table id="owners" data="${selections}" row="owner" theme="bootstrap2"
                       cssClass="table table-striped" pageable="false" info="false" export="pdf">
@@ -24,17 +24,12 @@
             </spring:url>
             <a href="${fn:escapeXml(ownerUrl)}"><c:out value="${owner.firstName} ${owner.lastName}"/></a>
         </datatables:column>
-        <datatables:column title="Name" display="pdf">
+        <datatables:column title="Nome" display="pdf">
             <c:out value="${owner.firstName} ${owner.lastName}"/>
         </datatables:column>
-        <datatables:column title="Address" property="address" cssStyle="width: 200px;"/>
-        <datatables:column title="City" property="city"/>
-        <datatables:column title="Telephone" property="telephone"/>
-        <datatables:column title="Pets" cssStyle="width: 100px;">
-            <c:forEach var="pet" items="${owner.pets}">
-                <c:out value="${pet.name}"/>
-            </c:forEach>
-        </datatables:column>
+        <datatables:column title="Endereço" property="address" cssStyle="width: 200px;"/>
+        <datatables:column title="Cidade" property="city"/>
+        <datatables:column title="Telefone" property="telephone"/>
         <datatables:export type="pdf" cssClass="btn" cssStyle="height: 25px;"/>
     </datatables:table>
 

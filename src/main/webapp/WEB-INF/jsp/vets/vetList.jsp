@@ -15,14 +15,14 @@
 <div class="container">
     <jsp:include page="../fragments/bodyHeader.jsp"/>
 
-    <h2>Veterinarians</h2>
+    <h2>Restaurantes</h2>
 
     <datatables:table id="vets" data="${vets.vetList}" row="vet" theme="bootstrap2" cssClass="table table-striped"
                       pageable="false" info="false">
-        <datatables:column title="Name">
+        <datatables:column title="Nome">
             <c:out value="${vet.firstName} ${vet.lastName}"></c:out>
         </datatables:column>
-        <datatables:column title="Specialties">
+        <datatables:column title="Specialidades">
             <c:forEach var="specialty" items="${vet.specialties}">
                 <c:out value="${specialty.name}"/>
             </c:forEach>

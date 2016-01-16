@@ -12,10 +12,9 @@
 <body>
 <div class="container">
     <jsp:include page="fragments/bodyHeader.jsp"/>
-    <h2><fmt:message key="welcome"/></h2>
-    <spring:url value="/resources/images/pets.png" htmlEscape="true" var="petsImage"/>
-    <img src="${petsImage}"/>
-	<h2>Obrigado por escolher o melhor almoço!</h2>
+    <spring:url value="/resources/images/fotografia-massa.jpg" htmlEscape="true" var="restImage"/>
+    <img src="${restImage}"/>
+	<h3>Obrigado por escolher o melhor almoço!</h3>
     <jsp:include page="fragments/footer.jsp"/>
 
 </div>

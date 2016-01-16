@@ -5,8 +5,8 @@
 	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0" metadata-complete="true">
 
-    <display-name>Spring PetClinic</display-name>
-    <description>Spring PetClinic sample application</description>
+    <display-name>Spring Bom Apetite</display-name>
+    <description>Spring Bom Apetite sample application</description>
 
     <!-- When using Spring jpa, use the following: -->
     <context-param>
@@ -46,7 +46,7 @@
 - Servlet that dispatches request to registered handlers (Controller implementations).
 -->
     <servlet>
-        <servlet-name>petclinic</servlet-name>
+        <servlet-name>bomapetite</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
@@ -56,7 +56,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>petclinic</servlet-name>
+        <servlet-name>bomapetite</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

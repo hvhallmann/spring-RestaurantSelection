@@ -21,7 +21,7 @@
 <div class="container">
     <jsp:include page="../fragments/bodyHeader.jsp"/>
 
-    <h2>Olá, Escolha o usuário, data e restaurante desejados</h2>
+    <h3>Olá, Escolha o usuário, data e restaurante desejados</h3>
     
      <form:form modelAttribute="chooser"
                class="form-horizontal">

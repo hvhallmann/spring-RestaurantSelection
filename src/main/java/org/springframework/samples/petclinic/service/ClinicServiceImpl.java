@@ -149,10 +149,4 @@ public class ClinicServiceImpl implements ClinicService {
         return restaurantRepository.findIdByMainName(sMainName);
     }
     
-//    @Override
-//    @Transactional(readOnly = true)    
-//    public ArrayList<Chooser> findWhoVoteOnDate(Chooser chooser){
-//    	return chooserRepository.findWhoVotedOnDate(chooser);
-//    }
-    
 }

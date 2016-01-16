@@ -17,27 +17,20 @@ package org.springframework.samples.petclinic.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Chooser;
-import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.Restaurant;
 import org.springframework.samples.petclinic.model.SumVotes;
-import org.springframework.samples.petclinic.model.Vets;
-import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.model.Vote;
 import org.springframework.samples.petclinic.model.VoteByDay;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Juergen Hoeller
@@ -56,56 +49,30 @@ public class ResultController {
         this.clinicService = clinicService;
     }
 
-//    @RequestMapping(value = {"/resultado.html"})
-//    public String showResultList(Map<String, Object> model) 
-//    {
-//        Chooser vets = new Vets();
-//        vets.getVetList().addAll(this.clinicService.findVets());
-//        model.put("vets", vets);
-//        
-//        return "vets/vetList";
-//    }
-    
-    /**
-     * Custom handler for displaying an owner.
-     *
-     * @param ownerId the ID of the owner to display
-     * @return a ModelMap with the model attributes for the view
-     */
-    @RequestMapping("/resultado.html")
-    public ModelAndView showResult() 
-    {
-        ModelAndView mav = new ModelAndView("chooser/resultDetails");
-        
-//        Object test = this.clinicService.findChoices();
-//        
-//        mav.addObject(test);
-        
-        return mav;
-    }
-    
     
     /**
      * 
-     * RODAR UMA FUNCAO AKI QUE VAI VERFICAR SE JAH FOI DEFINIDO RESTAURANTE
-     * NAO PERMITIR REPETIR RESTAURANTE NA SEMANA
-     * TODOS TERIAM Q VOTAR PARA VALIDAR :??
-     * -->ÉNSANDO MELHOR
-     * ACHO QUE O PROGRAMA VAI VERIFICAR OS ANTERIORES NA SEMANA E VAI VALIDAR CASO JAH TENHA GANHADOR
-     * 
-     * Called before each and every @RequestMapping annotated method.
-     * 2 goals:
-     * - Make sure we always have fresh data
-     * - Since we do not use the session scope, make sure that Pet object always has an id
-     * (Even though id is not part of the form fields)
+     * - Check all the votes on the table user selection, and return a list with the SumVotes 
+     * Class to display
      *
-     * @param petId
-     * @return Pet
      */
-    @ModelAttribute("oneChoice")
-    public Chooser loadOneChoice() 
-    {
-    	//get votes
+	  @RequestMapping(value = "/resultado", method = RequestMethod.GET)
+	  public String processFindForm( Map<String, Object> model) 
+      {
+		  	ArrayList<SumVotes> oKeepWinnersList = checkVoteResults();
+    	
+			model.put("selections", oKeepWinnersList);
+			return "chooser/resultDetails";
+      }
+	
+	  /**
+	     * 
+	     * Complex algorith to find the winners 
+	     * 
+	     */
+	private  ArrayList<SumVotes> checkVoteResults()
+	{
+		//get votes
         Collection<Chooser> oCollection = this.clinicService.findChoices();
         
         Iterator<Chooser> i = oCollection.iterator();
@@ -116,7 +83,7 @@ public class ResultController {
         LocalDate dFirstDayWeek = dCurrentDate.minusDays(nDiaSemana);        
         LocalDate dFinalWeekDay = dFirstDayWeek.plusDays(6);
         
-        //the week is starting on monday
+        //the week is starting on monday = 1
         //sunday is 7 = friday is 5
         
         ArrayList<VoteByDay> oKeepWeekDaysList = new ArrayList<VoteByDay>();
@@ -139,9 +106,9 @@ public class ResultController {
         		
         		oInnerKeepWeekDaysList.add(oVote);
         		
-        		//print which data is in
+        		//print which data is in the week
         		System.out.println("restaurant " + oneOptionChoosed.getRestaurant().getMainName() + " Data: " + oneOptionChoosed.getPickedDate().toString() +
-            			" user : " + oneOptionChoosed.getOwner().getLastName());	//AKI IMPRIMO TODA A BASE
+            			" user : " + oneOptionChoosed.getOwner().getLastName());	
         	}
         	//After today is not going to show
         	//print database
@@ -218,6 +185,7 @@ public class ResultController {
         	if(isDraw)
         	{
         		oWinner.setRestaurantName("Empate entre - " + sPossibleWinner);
+        		isDraw = false;
         	}
         	else
         	{
@@ -230,7 +198,7 @@ public class ResultController {
     					sPossibleWinner = secondOptionRestaurant;
     					if(sPossibleWinner.length() < 1)
     					{
-    						sPossibleWinner = "Restaurante repetido - dados insuficientes";
+    						sPossibleWinner = "Restaurante repetido - dados insuficientes para indicar outro";
     					}
     				}
                 }
@@ -243,22 +211,48 @@ public class ResultController {
         	oWinner.setTotalVotes(nCountVotes);
         	oKeepWinnersList.add(oWinner);
         	
-        	if(isDraw)
-        		System.out.println("possible empate");
-        	System.out.println("The winner is: " + sPossibleWinner + " With the following votes: " + nCountVotes.toString() +
-        			" on the day " + oCheckWinnerVote.getWeekDay());
+//        	if(isDraw)
+//        		System.out.println("possible empate");
+//        	System.out.println("The winner is: " + sPossibleWinner + " With the following votes: " + nCountVotes.toString() +
+//        			" on the day " + oCheckWinnerVote.getWeekDay());
         	
     	}
-        
-        
-        Restaurant oWinnerRestaurant = new Restaurant();
-        //oWinnerRestaurant.setMainName(sPossibleWinner);
-        
-        oneOptionChoosed.setRestaurant(oWinnerRestaurant);
-        //onlyOne.setPickedDate(pickedDate); // apos arrumar as datas pode trocas
-        //oneOptionChoosed.setDescription(nCountVotes.toString());
-        
-        return oneOptionChoosed;
-    }
+    	
+    	//remove today data before 11am
+    	for(SumVotes oneWinnerVoteToDelete : oKeepWinnersList)	
+        {
+    		if(nDiaSemana == oneWinnerVoteToDelete.getWeekDay() && new DateTime().getHourOfDay() < 11)
+    		{
+    			oKeepWinnersList.remove(oneWinnerVoteToDelete);
+    			break;
+    		}
+        }
+    	
+    	Integer nStartingWeekDay = dFirstDayWeek.getDayOfWeek();
+    	
+    	//adjust week day to display
+    	for(SumVotes oneWinnerVote : oKeepWinnersList)	
+        {
+    		int nAdjustDay = 0;
+    		if(nStartingWeekDay > oneWinnerVote.getWeekDay())
+    		{
+    			nAdjustDay = nStartingWeekDay - oneWinnerVote.getWeekDay() - 1;
+    			oneWinnerVote.setLunchTime(dFinalWeekDay.minusDays(nAdjustDay));
+    		}
+    		else if(nStartingWeekDay == oneWinnerVote.getWeekDay())
+    		{
+    			oneWinnerVote.setLunchTime(dFirstDayWeek);
+    		}
+    		else
+    		{
+    			nAdjustDay = nStartingWeekDay + oneWinnerVote.getWeekDay();
+    			oneWinnerVote.setLunchTime(dFirstDayWeek.plusDays(nAdjustDay));
+    		}
+    		
+    		
+        }
+    	
+    	return oKeepWinnersList;
+	}
 
 }

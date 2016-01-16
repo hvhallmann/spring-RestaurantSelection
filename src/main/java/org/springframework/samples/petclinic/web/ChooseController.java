@@ -146,7 +146,6 @@ public class ChooseController {
     	
     	if(chooser.getRestaurant() == null || chooser.getOwner() == null || chooser.getPickedDate() == null)
     	{
-    		System.out.println("Problema com a data!!!");
     		result.rejectValue("owner.lastName", "required", "required");
     		return "chooser/createOrUpdatePickedOption";
     	}
@@ -155,10 +154,6 @@ public class ChooseController {
             model.put("chooser", chooser);
             return "chooser/createOrUpdatePickedOption";
         } 
-    	
-    	System.out.println("Passou com rest " + chooser.getRestaurant().getMainName());
-    	System.out.println("Passou com user " + chooser.getOwner().getLastName());
-    	System.out.println("Passou com data " + chooser.getPickedDate());
     	
     	//Find User id    	    
     	Owner finalOwner = findUniqueOwner(chooser.getOwner().getLastName());    	
@@ -172,31 +167,12 @@ public class ChooseController {
     	if (checkForUniqueInsert(chooser))
     	{
 	    	System.out.println("usuario duplicado mesmo dia copm falhas!!!");
-	    	result.rejectValue("owner.lastName", "duplicate", "usuario duplicado mesmo dia");
+	    	result.rejectValue("owner.lastName", "repeated", "usuario duplicado mesmo dia");
     		return "chooser/createOrUpdatePickedOption";
-	    	//return "redirect:/escolher.html";
-	        //result.rejectValue("name", "duplicate", "already exists");
 	    }
     	
     	this.clinicService.saveUserChoice(chooser);
     	
-    	System.out.println("Passou por aki");
-    	
-    	//arrumar esse redirecionamento!!
     	return "redirect:/";
-    	//return "redirect:/escolher.html";
     }
-
-    
-    @RequestMapping("/ChooseVets.json")
-    public
-    @ResponseBody
-    Vets showResourcesVetList() {
-        // Here we are returning an object of type 'Vets' rather than a collection of Vet objects
-        // so it is simpler for JSon/Object mapping
-        Vets vets = new Vets();
-        vets.getVetList().addAll(this.clinicService.findVets());
-        return vets;
-    }
-
 }

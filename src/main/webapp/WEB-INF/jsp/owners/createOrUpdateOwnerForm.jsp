@@ -18,24 +18,24 @@
     <jsp:include page="../fragments/bodyHeader.jsp"/>
 
     <h2>
-        <c:if test="${owner['new']}">New </c:if> Owner
+        <c:if test="${owner['new']}">Novo </c:if> Funcionário
     </h2>
     <form:form modelAttribute="owner" class="form-horizontal" id="add-owner-form">
-        <petclinic:inputField label="First Name" name="firstName"/>
-        <petclinic:inputField label="Last Name" name="lastName"/>
+        <petclinic:inputField label="Primeiro Nome" name="firstName"/>
+        <petclinic:inputField label="Último Nome" name="lastName"/>
         <petclinic:inputField label="Login" name="login"/>
         <petclinic:inputField label="password" name="password"/>
-        <petclinic:inputField label="Address" name="address"/>
-        <petclinic:inputField label="City" name="city"/>
-        <petclinic:inputField label="Telephone" name="telephone"/>        
+        <petclinic:inputField label="Endereço" name="address"/>
+        <petclinic:inputField label="Cidade" name="city"/>
+        <petclinic:inputField label="Telefone" name="telephone"/>        
 
         <div class="form-actions">
             <c:choose>
                 <c:when test="${owner['new']}">
-                    <button type="submit">Add Owner</button>
+                    <button type="submit">Add Funcionário</button>
                 </c:when>
                 <c:otherwise>
-                    <button type="submit">Update Owner</button>
+                    <button type="submit">Atualizar Funcionário</button>
                 </c:otherwise>
             </c:choose>
         </div>

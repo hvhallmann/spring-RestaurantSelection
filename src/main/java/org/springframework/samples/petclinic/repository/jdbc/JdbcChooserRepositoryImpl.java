@@ -79,29 +79,6 @@ public class JdbcChooserRepositoryImpl implements ChooserRepository {
     }
 
 
-    /**
-     * Loads the {@link Owner} with the supplied <code>id</code>; also loads the {@link Pet Pets} and {@link Visit Visits}
-     * for the corresponding owner, if not already loaded.
-     
-    @Override
-    public Owner findByDate(int id) throws DataAccessException {
-        Owner owner;
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("id", id);
-            owner = this.namedParameterJdbcTemplate.queryForObject(
-                "SELECT id, first_name, last_name, address, city, telephone FROM owners WHERE id= :id",
-                params,
-                BeanPropertyRowMapper.newInstance(Owner.class)
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            throw new ObjectRetrievalFailureException(Owner.class, id);
-        }
-        loadPetsAndVisits(owner);
-        return owner;
-    }
-    */
-
     @Override
     public void save(Chooser choice) throws DataAccessException {
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(choice);

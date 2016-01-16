@@ -6,6 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="datatables" uri="http://github.com/dandelion/datatables" %>
 
 <html lang="en">
 
@@ -17,22 +18,22 @@
 
     <h2>Resultado Ganhador</h2>
 	
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Para o Dia</th>
-            <th>Com n Votos</th>
-        </tr>
-        </thead>
-        <tr>
-            <td><c:out value="${oneChoice.restaurant.mainName}"/></td>
-            <td><joda:format value="${oneChoice.pickedDate}" pattern="yyyy/MM/dd"/></td>
-            <td><c:out value="${oneChoice.description}"/></td>
-        </tr>
-    </table>
+    <datatables:table id="results" data="${selections}" row="sumVotes" theme="bootstrap2" cssClass="table table-striped"
+                      pageable="false" info="false">
+        <datatables:column title="Nome">
+            <c:out value="${sumVotes.restaurantName} "></c:out>
+        </datatables:column>
+        <datatables:column title="Date"  sortInitDirection="desc" >
+            <c:out value="${sumVotes.lunchTime} "></c:out>
+        </datatables:column>
+        <datatables:column title="Numero Votos">
+            <c:out value="${sumVotes.totalVotes} "></c:out>
+        </datatables:column>
+        
+    </datatables:table>
 	
-
+	* obs.: Os resultados para hoje somente são liberados após as 11h
+	
     <jsp:include page="../fragments/footer.jsp"/>
 
 </div>
