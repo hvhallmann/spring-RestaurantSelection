@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
-    <artifactId>spring-petclinic</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>bom-apetite</artifactId>
+    <version>1.0.0</version>
 
-    <name>petclinic</name>
+    <name>bomapetite</name>
     <packaging>war</packaging>
 
     <properties>
@@ -330,7 +330,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warName>petclinic</warName>
+                    <warName>bomapetite</warName>
                 </configuration>
             </plugin>
             <plugin>
@@ -376,7 +376,7 @@
                 <configuration>
                     <server>tomcat-development-server</server>
                     <port>9966</port>
-                    <path>/petclinic</path>
+                    <path>/bomapetite</path>
                 </configuration>
             </plugin>
             <plugin>
@@ -415,5 +415,5 @@
         </plugins>
     </reporting>
 
-    <url>demopetclinic</url>
+    <url>demobomapetite</url>
 </project>
